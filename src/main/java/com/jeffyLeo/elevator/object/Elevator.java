@@ -19,26 +19,30 @@ public class Elevator implements ElevatorAction {
 		moveType = 0;
 	}
 	public void moveTo(final Integer goal) {
-		moveType = goal - this.position;
-		if(moveType != 0){
 			new TimeRun(speed, new CallbackTimeRunTask(){
 	
 				public void timeRunTask() {
-					// 位置变动
-					position += moveType/Math.abs(moveType);
-					System.out.println("电梯_" + elevatorName + "位置： " + position);
+					moveType = goal - position;
+					if(moveType != 0){
+					change();
+					if(position != goal){
+						moveTo(goal);
+					} else {
+						System.out.println("position == goal");
+					}
+				} else {
+					System.out.println("除数为零！");
+					return;
+				}
 				}
 				
 			});
-			if(position != goal){
-				moveTo(goal);
-			} else {
-				System.out.println("position == goal");
-			}
-		} else {
-			System.out.println("除数为零！");
-			return;
-		}
+	}
+	private  void change(){
+		// 位置变动
+		position += moveType/Math.abs(moveType);
+		System.out.println("电梯_" + elevatorName + "位置： " + position);
+//		System.out.println(Thread.currentThread().getName());
 	}
 	public String getElevatorName() {
 		return elevatorName;

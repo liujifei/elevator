@@ -12,7 +12,6 @@ public class TimeRun {
 	public TimeRun(int runTime, CallbackTimeRunTask callback){
 		timer = new Timer();
 		timer.schedule(new TimeTask(callback), runTime * 1000);
-		timer.cancel();
 	}
 
 	public void stop(){
