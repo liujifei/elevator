@@ -8,7 +8,7 @@ public class Main {
 
 		Elevator e1 = new Elevator("elevator1");
 		e1.moveTo(10);
-		e1.moveTo(5);
+//		e1.moveTo(5);
 	}
 
 }
