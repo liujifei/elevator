@@ -19,12 +19,15 @@ public class Elevator implements ElevatorAction {
 		moveType = 0;
 	}
 	public void moveTo(final Integer goal) {
-			new TimeRun(speed, new CallbackTimeRunTask(){
-	
-				public void timeRunTask() {
-					moveType = goal - position;
-					if(moveType != 0){
-					change();
+		new TimeRun(speed, new CallbackTimeRunTask(){
+
+			public void timeRunTask() {
+				moveType = goal - position;
+				if(moveType != 0){
+					// 位置变动
+					System.out.println("电梯_" + elevatorName + "位置： " + position);
+//						System.out.println(Thread.currentThread().getName());
+					position += moveType/Math.abs(moveType);
 					if(position != goal){
 						moveTo(goal);
 					} else {
@@ -34,16 +37,11 @@ public class Elevator implements ElevatorAction {
 					System.out.println("除数为零！");
 					return;
 				}
-				}
-				
-			});
+			}
+			
+		});
 	}
-	private  void change(){
-		// 位置变动
-		position += moveType/Math.abs(moveType);
-		System.out.println("电梯_" + elevatorName + "位置： " + position);
-//		System.out.println(Thread.currentThread().getName());
-	}
+
 	public String getElevatorName() {
 		return elevatorName;
 	}
