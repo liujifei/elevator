@@ -1,47 +1,57 @@
 package com.jeffyLeo.elevator.object;
 
-import com.jeffyLeo.elevator.intface.CallbackTimeRunTask;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import com.jeffyLeo.elevator.intface.ElevatorAction;
-import com.jeffyLeo.elevator.utils.TimeRun;
 
 public class Elevator implements ElevatorAction {
 
-	//
+	//电梯名
 	private String elevatorName;
 	//位置
 	private Integer position;
 	//运行方式 >0：上行	0：停止	<0：下行
 	private Integer moveType;
-
+	//
+	Timer timer;
+	TimeTask task;
 	public Elevator(String name){
+		timer = new Timer();
 		elevatorName = name;
 		position = 1;
 		moveType = 0;
 	}
-	public void moveTo(final Integer goal) {
-		new TimeRun(speed, new CallbackTimeRunTask(){
-
-			public void timeRunTask() {
-				moveType = goal - position;
-				if(moveType != 0){
-					// 位置变动
-					System.out.println("电梯_" + elevatorName + "位置： " + position);
-//						System.out.println(Thread.currentThread().getName());
-					position += moveType/Math.abs(moveType);
-					if(position != goal){
-						moveTo(goal);
-					} else {
-						System.out.println("position == goal");
-					}
-				} else {
-					System.out.println("除数为零！");
-					return;
-				}
-			}
-			
-		});
+	public synchronized void moveTo(final Integer goal) {
+		if(Thread.currentThread()!=null){
+			task = new TimeTask(goal);
+			moveType = goal - position;
+			timer.schedule(task, 0, speed * 1000);
+		}
 	}
 
+	class TimeTask extends TimerTask{
+		Integer moveGoal;
+		public TimeTask(final Integer goal){
+			moveGoal = goal;
+		}
+		@Override
+		public void run() {
+			if(moveGoal == position){
+				timer.cancel();
+			} else {
+				change();
+			}
+		}
+	}
+
+	private synchronized void change(){
+		// 位置变动
+		position += moveType/Math.abs(moveType);
+		System.out.println("电梯_" + elevatorName + "位置： " + position);
+		System.out.println(Thread.currentThread().getName());
+		
+	}
 	public String getElevatorName() {
 		return elevatorName;
 	}
